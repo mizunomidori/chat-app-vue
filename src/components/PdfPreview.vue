@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import PDF from 'pdf-vue3'
+import PDF from 'pdf-vue3';
 </script>
 
 <template>

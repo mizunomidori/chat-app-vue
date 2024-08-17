@@ -77,10 +77,37 @@ watch(() => props.questions, () => {
             <DustbinIcon />
             会話履歴の全クリア
           </a>
-          <div class="flex-col flex-1 overflow-y-auto border-t border-b border-white/20">
+          <div class="flex-col flex-1 overflow-y-auto border-y border-white/20">
             <div class="flex flex-col gap-2 text-gray-100 text-sm">
-              <div class="flex pt-3 px-3 items-center">
-                <h2>タグ</h2>
+              <div class="flex-col items-center flex-nowrap">
+                <div class="flex py-3 px-3 items-center text-gray-100 text-sm">
+                  <h2>タグ</h2>
+                </div>
+                <div class="py-3 flex flex-col flex-nowrap gap-3">
+                  <details
+                    class="py-3 px-3 items-center rounded-md bg-emerald-400 hover:bg-emerald-300 transition-colors duration-200 text-black cursor-pointer text-sm font-extrabold">
+                    <summary class="flex list-none justify-between">
+                      編成
+                    </summary>
+                  </details>
+                  <details
+                    class="py-3 px-3 items-center rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-gray-500 cursor-pointer text-sm">
+                    <summary class="flex list-none">
+                      営業
+                    </summary>
+                  </details>
+                  <details
+                    class="py-3 px-3 items-center rounded-md bg-emerald-400 hover:bg-emerald-300 transition-colors duration-200 text-black cursor-pointer text-sm font-bold">
+                    <summary class="flex list-none">
+                      技術
+                    </summary>
+                    <ul class="pt-3">
+                      <li>運行</li>
+                      <li>回線</li>
+                      <li>送受信</li>
+                    </ul>
+                  </details>
+                </div>
               </div>
 
             </div>
