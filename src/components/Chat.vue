@@ -34,7 +34,7 @@ watch(
   async (newValue, oldValue) => {
     const fetchMessages = async () => {
       console.log('newValue', newValue);
-      if (newValue?.role === 'assistant') {
+      if (newValue?.role === 'assistant' && newValue.content) {
         // AIの回答：回答スピードはtypingSpeedで調整
         for (let i = 0; i < newValue.content.length; i++) {
           await wait(typingSpeed.value);
