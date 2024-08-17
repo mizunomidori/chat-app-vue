@@ -3,37 +3,38 @@ import { nextTick, onMounted, ref, watch, computed } from 'vue';
 import GptIcon from '@/components/icons/IconGpt.vue';
 import UserIcon from '@/components/icons/IconUser.vue';
 import MemoIcon from '@/components/icons/IconMemo.vue';
+import ClipboardIcon from "@/components/icons/IconClipboard.vue";
+import { type MessageType } from '@/types/custom';
 
-const props = defineProps({
-  chat: {
-    type: Object || null,
-  },
-});
+// const props = defineProps({
+//   chat: {
+//     type: Object || null,
+//   },
+// });
+
+const props = defineProps<{ chat:MessageType }>();
+const chat = ref<MessageType>(props.chat);
 
 let currentChar = ref<string>('');
 const typingSpeed = ref<number>(20);
-let currentMessage = ref<HTMLDivElement>(null);
+let currentMessage = ref<HTMLDivElement>();
 
-const getData = computed(() => {
-  return props.chat;
-});
-
-const wait = (time) => {
+const wait = (time: number) => {
   return new Promise((resolve) => setTimeout(resolve, time));
 };
 
 onMounted(async () => {
   await nextTick();
   const div = currentMessage.value;
-  div.scrollIntoView({ behavior: 'smooth' });
+  div?.scrollIntoView({ behavior: 'smooth' });
 });
 
 watch(
-  getData,
+  () => props.chat,
   async (newValue, oldValue) => {
     const fetchMessages = async () => {
       console.log('newValue', newValue);
-      if (newValue.role === 'assistant') {
+      if (newValue?.role === 'assistant') {
         for (let i = 0; i < newValue.content.length; i++) {
           await wait(typingSpeed.value);
           currentChar.value = newValue.content.slice(0, i + 1);
@@ -80,10 +81,16 @@ watch(
           <div
             class="text-gray-400 flex self-end lg:self-center justify-center mt-2 gap-3 md:gap-4 lg:gap-1 lg:absolute lg:top-0 lg:translate-x-full lg:right-0 lg:mt-0 lg:pl-2 visible"
           >
-            <button
+            <!-- TODO: 過去のチャットを編集可能にする？ -->
+            <!-- <button
               class="p-1 rounded-md hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400 md:invisible md:group-hover:visible"
             >
               <MemoIcon />
+            </button> -->
+            <button
+              class="rounded-md hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400 md:invisible md:group-hover:visible"
+            >
+              <ClipboardIcon />
             </button>
           </div>
           <div class="flex justify-between"></div>
@@ -93,7 +100,7 @@ watch(
     <!-- GPT -->
     <div
       v-else
-      class="w-full border-b border-black/10 dark:border-gray-900/50 text-gray-800 dark:text-gray-100 group bg-gray-50 dark:bg-[#444654]"
+      class="w-full border-b border-black/10 dark:border-gray-900/50 text-gray-800 dark:text-gray-100 group bg-[#ececed] dark:bg-[#444654]"
     >
       <div
         class="text-base gap-4 md:gap-6 m-auto md:max-w-2xl lg:max-w-2xl xl:max-w-3xl p-4 md:py-6 flex lg:px-0"
@@ -123,9 +130,9 @@ watch(
               class="text-gray-400 flex self-end lg:self-center justify-center mt-2 gap-3 md:gap-4 lg:gap-1 lg:absolute lg:top-0 lg:translate-x-full lg:right-0 lg:mt-0 lg:pl-2 visible"
             >
               <button
-                class="p-1 rounded-md hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400"
+                class="rounded-md hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400 md:invisible md:group-hover:visible"
               >
-                <MemoIcon />
+                <ClipboardIcon />
               </button>
             </div>
           </div>

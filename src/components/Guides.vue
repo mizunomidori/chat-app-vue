@@ -7,7 +7,7 @@ import CautionIcon from '@/components/icons/IconCaution.vue';
 
 <template>
   <div class="flex-1 overflow-hidden">
-    <div class="react-scroll-to-bottom--css-ryzwt-79elbk h-full dark:bg-gray-800">
+    <div class="react-scroll-to-bottom--css-ryzwt-79elbk h-full bg-gray-100 dark:bg-gray-800">
       <div class="react-scroll-to-bottom--css-ryzwt-1n7m0yu">
         <div class="flex flex-col items-center text-sm dark:bg-gray-800">
           <div

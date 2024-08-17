@@ -1,8 +1,8 @@
 <template>
   <!-- License: MIT. Made by Garuda Technology: https://github.com/garudatechnologydevelopers/sketch-icons -->
   <svg
-    width="16px"
-    height="16px"
+    width="12px"
+    height="12px"
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

@@ -1,5 +1,5 @@
-<script setup>
-import { ref } from 'vue';
+<script setup lang="ts">
+import { ref, watch } from 'vue';
 import PlusIcon from '@/components/icons/IconPlus.vue';
 import LightIcon from '@/components/icons/IconLight.vue';
 import DarkIcon from '@/components/icons/IconDark.vue';
@@ -9,42 +9,41 @@ import EscapeIcon from '@/components/icons/IconEscape.vue';
 import BalloonIcon from '@/components/icons/IconBalloon.vue';
 import CheckIcon from '@/components/icons/IconCheck.vue';
 import DustbinIcon from '@/components/icons/IconDustbin.vue';
+import { type MessageType } from '@/types/custom';
+
 const emits = defineEmits(['clear', 'light']);
-const props = defineProps({
-  questions: Array,
-});
+const props = defineProps<{ questions: MessageType[] }>();
+const questions = ref<MessageType[]>(props.questions);
 
 let isLightMode = ref(false);
-let counter = ref(0);
-let isConfirm = ref({
-  text: 'Clear conversation',
-  isTrue: false,
-});
+let counter = ref<number>(0);
+const waitTime = ref<number>(500);
+
+interface ConfirmType {
+  text: string;
+  needConfirm: boolean;
+}
+
+const clearConversation: ConfirmType = {
+  text: "会話履歴の全クリア",
+  needConfirm: false,
+}
 
 const clearStorage = () => {
-  counter.value += 1;
-  isConfirm.value = {
-    text: 'Confirm clear conversation',
-    isTrue: true,
-  };
-  console.log(counter.value);
-  if (counter.value === 2) {
-    setTimeout(() => {
-      localStorage.clear();
-      emits('clear', true);
-    }, 1000);
-    isConfirm.value = {
-      text: 'Clear conversation',
-      isTrue: false,
-    };
-    counter.value = 0;
-  }
+  setTimeout(() => {
+    localStorage.clear();
+    emits('clear', true);
+  }, waitTime.value);
 };
 
 const changeToLight = () => {
   isLightMode.value = !isLightMode.value;
   emits('light', isLightMode.value);
 };
+
+watch(() => props.questions, () => {
+  questions.value = props.questions;
+});
 </script>
 <template>
   <div class="dark hidden bg-gray-900 md:fixed md:inset-y-0 md:flex md:w-[260px] md:flex-col">
@@ -66,7 +65,7 @@ const changeToLight = () => {
               >
                 <BalloonIcon />
                 <div class="flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative">
-                  {{ thread.value }}
+                  {{ thread.content }}
                   <div
                     class="absolute inset-y-0 right-0 w-8 z-10 bg-gradient-to-l from-gray-900 group-hover:from-[#2A2B32]"
                   ></div>
@@ -77,12 +76,12 @@ const changeToLight = () => {
           <a
             v-if="questions && questions.length"
             @click="clearStorage()"
-            class="flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm"
+            class="flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm text-red-600"
           >
-            <CheckIcon v-if="isConfirm.isTrue" />
-            <DustbinIcon v-else />
-            {{ isConfirm.text }}</a
-          ><a
+            <DustbinIcon />
+            会話履歴の全クリア
+          </a>
+          <a
             @click="changeToLight()"
             class="flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm"
           >

@@ -15,15 +15,15 @@ import { ref, onMounted, watch } from 'vue';
 let query = ref([]);
 let response = ref([]);
 const question = ref<string>('');
-const messageList = ref<MessageType>([]);
+const messageList = ref<MessageType[]>([]);
 const saveQuestions = ref([]);
 let isThinking = ref<boolean>(false);
 let isLight = ref<boolean>(false);
 
-const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true,
-});
+// const openai = new OpenAI({
+//   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+//   dangerouslyAllowBrowser: true,
+// });
 
 const getQuestions = () => {
   saveQuestions.value = JSON.parse(localStorage.getItem('threads'));
@@ -47,18 +47,19 @@ const getAnswer = async () => {
       content: '',
     });
 
-    const res = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [{ role: 'user', content: question.value }],
-      max_tokens: 1024,
-      temperature: 0.0,
-    });
-    const data = res.data.choices[0].message.content;
+    // const res = await openai.chat.completions.create({
+    //   model: 'gpt-4o-mini',
+    //   messages: [{ role: 'user', content: question.value }],
+    //   max_tokens: 1024,
+    //   temperature: 0.0,
+    // });
+    // const data = res.choices[0].message.content;
+    const data = 'DUMMY:AAAAAAABBBBBBBBCCCCCCCDDDDDEEEEE';
 
     messageList.value.pop();
     messageList.value.push({
       role: 'assistant',
-      content: data.trim(),
+      content: data?.trim(),
     });
 
     let newQuestions = messageList.value.filter((item) => {
@@ -66,8 +67,8 @@ const getAnswer = async () => {
     });
     localStorage.setItem('threads', JSON.stringify(newQuestions));
     getQuestions();
+    console.log("saveQ", saveQuestions.value);
   } catch (error) {
-    response.value = error;
     console.log('error', error);
   } finally {
     isThinking.value = false;
@@ -77,6 +78,7 @@ const getAnswer = async () => {
 
 const sendQuestion = async () => {
   if (!question.value.length || question.value === '\n') {
+    question.value = '';
     return;
   }
   await getAnswer();
@@ -95,7 +97,7 @@ onMounted(() => {
       >
         <div class="h-full" v-if="messageList.length">
           <div class="h-full flex-1 overflow-hidden">
-            <div class="h-full overflow-y-auto dark:bg-gray-800">
+            <div class="h-full overflow-y-auto bg-gray-100 dark:bg-gray-800">
               <div>
                 <div class="flex flex-col items-center text-sm dark:bg-gray-800">
                   <div
@@ -122,13 +124,13 @@ onMounted(() => {
             class="stretch mx-2 flex flex-row gap-3 pt-2 last:mb-2 md:last:mb-6 lg:mx-auto lg:max-w-3xl lg:pt-6"
           >
             <div
-              class="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-black/10 bg-white dark:border-gray-900/50 dark:text-white dark:bg-gray-700 rounded-md shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:shadow-[0_0_15px_rgba(0,0,0,0.10)]"
+              class="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-black/10 bg-white dark:border-gray-900/50 text-gray-800 dark:text-white dark:bg-gray-700 rounded-md shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:shadow-[0_0_15px_rgba(0,0,0,0.10)]"
             >
               <textarea
                 class="m-0 w-full h-full resize-none border-0 bg-transparent p-0 pl-2 pr-7 focus:ring-0 focus-visible:ring-0 focus-visible:outline-0 dark:bg-transparent md:pl-0"
                 rows="1"
                 cols="1"
-                @keydown.enter="isThinking || sendQuestion()"
+                @keyup.enter="isThinking || sendQuestion()"
                 placeholder="何でも聞いてください..."
                 v-model="question"
               ></textarea>
