@@ -4,6 +4,7 @@
 import Chat from '@/components/Chat.vue';
 import Guides from '@/components/Guides.vue';
 import Sidebar from '@/components/Sidebar.vue';
+import PdfPreview from '@/components/PdfPreview.vue';
 
 import SubmitIcon from '@/components/icons/IconSubmit.vue';
 import { type MessageType } from '@/types/custom';
@@ -16,7 +17,7 @@ let query = ref([]);
 let response = ref([]);
 const question = ref<string>('');
 const messageList = ref<MessageType[]>([]);
-const saveQuestions = ref([]);
+const questionList = ref<MessageType[]>([]);
 let isThinking = ref<boolean>(false);
 let isLight = ref<boolean>(false);
 
@@ -25,12 +26,16 @@ let isLight = ref<boolean>(false);
 //   dangerouslyAllowBrowser: true,
 // });
 
+const setQuestions = (questions: MessageType[]) => {
+  localStorage.setItem('threads', JSON.stringify(questions));
+};
+
 const getQuestions = () => {
-  saveQuestions.value = JSON.parse(localStorage.getItem('threads'));
+  questionList.value = JSON.parse(localStorage.getItem('threads') || '{}');
 };
 
 const clearStorage = () => {
-  saveQuestions.value = '';
+  questionList.value = [];
   messageList.value = [];
 };
 
@@ -62,12 +67,12 @@ const getAnswer = async () => {
       content: data?.trim(),
     });
 
-    let newQuestions = messageList.value.filter((item) => {
+    const userQuestions = messageList.value.filter((item) => {
       return item.role === 'user';
     });
-    localStorage.setItem('threads', JSON.stringify(newQuestions));
+    setQuestions(userQuestions);
     getQuestions();
-    console.log("saveQ", saveQuestions.value);
+    console.log("saveQ", questionList.value);
   } catch (error) {
     console.log('error', error);
   } finally {
@@ -92,20 +97,15 @@ onMounted(() => {
 <template>
   <div class="overflow-hidden w-full h-full relative" :class="isLight ? 'light' : 'dark'">
     <div class="flex flex-1 flex-col md:pl-[260px] md:pr-[260px] h-screen">
-      <main
-        class="relative h-full w-full transition-width flex flex-col overflow-hidden items-stretch flex-1"
-      >
+      <main class="relative h-full w-full transition-width flex flex-col overflow-hidden items-stretch flex-1">
         <div class="h-full" v-if="messageList.length">
           <div class="h-full flex-1 overflow-hidden">
             <div class="h-full overflow-y-auto bg-gray-100 dark:bg-gray-800">
               <div>
                 <div class="flex flex-col items-center text-sm dark:bg-gray-800">
-                  <div
-                    v-for="(chat, i) in messageList"
-                    :key="i"
+                  <div v-for="(chat, i) in messageList" :key="i"
                     class="w-full border-b border-black/10 dark:border-gray-900/50 text-gray-800 dark:text-gray-100 group bg-gray-50 dark:bg-[#444654]"
-                    :class="{ ai: chat.role === 'assistant' }"
-                  >
+                    :class="{ ai: chat.role === 'assistant' }">
                     <Chat :chat="chat" :key="i" class="w-full" />
                   </div>
                   <div class="w-full h-32 md:h-48 flex-shrink-0"></div>
@@ -117,29 +117,18 @@ onMounted(() => {
         <!-- Guides -->
         <Guides v-else />
         <div
-          class="absolute bottom-0 left-0 w-full border-t md:border-t-0 dark:border-white/20 md:border-transparent md:dark:border-transparent md:bg-vert-light-gradient bg-white dark:bg-gray-800 md:!bg-transparent dark:md:bg-vert-dark-gradient"
-        >
-          <form
-            @submit.prevent="getAnswer"
-            class="stretch mx-2 flex flex-row gap-3 pt-2 last:mb-2 md:last:mb-6 lg:mx-auto lg:max-w-3xl lg:pt-6"
-          >
+          class="absolute bottom-0 left-0 w-full border-t md:border-t-0 dark:border-white/20 md:border-transparent md:dark:border-transparent md:bg-vert-light-gradient bg-white dark:bg-gray-800 md:!bg-transparent dark:md:bg-vert-dark-gradient">
+          <form @submit.prevent="getAnswer"
+            class="stretch mx-2 flex flex-row gap-3 pt-2 last:mb-2 md:last:mb-6 lg:mx-auto lg:max-w-3xl lg:pt-6">
             <div
-              class="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-black/10 bg-white dark:border-gray-900/50 text-gray-800 dark:text-white dark:bg-gray-700 rounded-md shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:shadow-[0_0_15px_rgba(0,0,0,0.10)]"
-            >
+              class="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-black/10 bg-white dark:border-gray-900/50 text-gray-800 dark:text-white dark:bg-gray-700 rounded-md shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:shadow-[0_0_15px_rgba(0,0,0,0.10)]">
               <textarea
                 class="m-0 w-full h-full resize-none border-0 bg-transparent p-0 pl-2 pr-7 focus:ring-0 focus-visible:ring-0 focus-visible:outline-0 dark:bg-transparent md:pl-0"
-                rows="1"
-                cols="1"
-                @keyup.enter="isThinking || sendQuestion()"
-                placeholder="何でも聞いてください..."
-                v-model="question"
-              ></textarea>
-              <button
-                type="submit"
-                class="absolute p-1 rounded-md text-gray-500 bottom-1.5 right-1 md:bottom-2.5 md:right-2 hover:bg-gray-100 dark:hover:text-gray-400 dark:hover:bg-gray-900 disabled:hover:bg-transparent dark:disabled:hover:bg-transparent"
-                @click="sendQuestion()"
-                :disabled="isThinking"
-              >
+                rows="1" cols="1" @keyup.enter="isThinking || sendQuestion()" placeholder="何でも聞いてください..."
+                v-model="question"></textarea>
+              <button type="submit"
+                class="absolute p-2 rounded-md text-gray-500 bottom-1.5 right-1 md:bottom-2.5 md:right-2 hover:bg-gray-100 dark:hover:text-gray-400 dark:hover:bg-gray-900 disabled:hover:bg-transparent dark:disabled:hover:bg-transparent"
+                @click="sendQuestion()" :disabled="isThinking">
                 <SubmitIcon />
               </button>
             </div>
@@ -147,6 +136,7 @@ onMounted(() => {
         </div>
       </main>
     </div>
-    <Sidebar :questions="saveQuestions" @clear="clearStorage()" @light="isLight = $event" />
+    <Sidebar :questions="questionList" @clear="clearStorage()" @light="isLight = $event" />
+    <PdfPreview />
   </div>
 </template>
