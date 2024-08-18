@@ -89,7 +89,7 @@ watch(() => props.questions, () => {
           </a>
           <div class="flex-col flex-1 overflow-y-auto border-y border-white/20">
             <div class="flex flex-col gap-2 text-gray-100 text-sm">
-              <TagList :selected="selectedTags" />
+              <TagList :selected-items="selectedTags" />
             </div>
           </div>
 
