@@ -8,6 +8,7 @@ import UpdateIcon from '@/components/icons/IconUpdate.vue';
 import EscapeIcon from '@/components/icons/IconEscape.vue';
 import BalloonIcon from '@/components/icons/IconBalloon.vue';
 import DustbinIcon from '@/components/icons/IconDustbin.vue';
+import TagIcon from "@/components/icons/IconTag.vue";
 import ExpandIcon from "@/components/icons/IconExpand.vue";
 import { type MessageType } from '@/types/custom';
 
@@ -74,7 +75,7 @@ watch(() => props.questions, () => {
             </div>
           </div>
           <a v-if="questions && questions.length" @click="clearStorage()"
-            class="flex py-3 px-3 items-center gap-3 rounded-md bg-red-600 hover:bg-red-500 transition-colors duration-200 text-white cursor-pointer text-sm">
+            class="flex py-3 px-3 items-center gap-3 rounded-md bg-red-900 hover:bg-red-800 transition-colors duration-200 text-white cursor-pointer text-sm">
             <DustbinIcon />
             会話履歴の全クリア
           </a>
@@ -86,22 +87,21 @@ watch(() => props.questions, () => {
                 </div>
                 <div class="py-3 flex flex-col flex-nowrap gap-3">
                   <details
-                    class="py-3 px-3 items-center rounded-md bg-emerald-500/10 hover:bg-emerald-300/10 transition-colors duration-200 text-white cursor-pointer text-sm [&_svg]:-rotate-[-90deg] [&_svg]:open:-rotate-90">
-                    <summary class="flex list-none justify-between text-emerald-400 font-bold">
-                      編成
-                      <ExpandIcon />
-                    </summary>
-                  </details>
-                  <details
-                    class="py-3 px-3 items-center rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-gray-500 text-sm">
-                    <summary class="flex list-none">
-                      営業
+                    class="py-3 px-3 items-center rounded-md bg-emerald-500/10 hover:bg-emerald-300/10 transition-colors duration-200 text-white cursor-pointer text-sm [&_svg:last-child]:open:-rotate-90">
+                    <summary class="flex justify-between gap-3 list-none text-emerald-400 font-bold">
+                      <TagIcon />
+                      <span class="grow">編成</span>
+                      <div class="justify-self-end">
+                        <ExpandIcon />
+                      </div>
                     </summary>
                   </details>
                   <details open
-                    class="py-3 px-3 items-center rounded-md bg-emerald-500/10 hover:bg-emerald-300/10 transition-colors duration-200 text-white cursor-pointer text-sm [&_svg]:-rotate-[-90deg] [&_svg]:open:-rotate-90">
-                    <summary class="flex list-none justify-between text-emerald-400 font-bold">
-                      技術
+                    class="py-3 px-3 items-center rounded-md bg-emerald-500/10 hover:bg-emerald-300/10 transition-colors duration-200 text-white cursor-pointer text-sm [&_svg:last-child]:open:-rotate-90">
+                    <summary class="flex list-none justify-between gap-3 text-emerald-400 font-bold">
+                      <TagIcon />
+                      <span class="grow">技術</span>
+                      <div class="justify-self-end"></div>
                       <ExpandIcon />
                     </summary>
                     <ul class="pt-3">
