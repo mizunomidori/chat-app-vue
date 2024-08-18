@@ -38,11 +38,13 @@ watch(() => props.selected, () => {
         <div v-show="tag.genre.length" class="grid grid-cols-2 gap-3 py-3 px-3">
           <div v-show="tag.genre.length > 1" class="col-span-2 flex gap-2">
             <input type="checkbox" id="ALL" value="ALL" />
-            <label for="ALL">{{ selected.values.length === 2 ? "すべて解除" : "すべて選択" }}</label>
+            <label for="ALL">
+              {{ selected.values.length === tag.genre.length ? "すべて解除" : "すべて選択" }}
+            </label>
           </div>
           <div v-for="(item, idx) in tag.genre" :key="item + idx" class="flex gap-3">
-            <input type="checkbox" v-model="selected" id={item} value={item} />
-            <label for={item}>{{ item }}</label>
+            <input type="checkbox" v-model="selected" :id="item" :value="item" />
+            <label :for="item">{{ item }}</label>
           </div>
         </div>
       </details>
