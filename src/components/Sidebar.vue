@@ -8,6 +8,7 @@ import UpdateIcon from '@/components/icons/IconUpdate.vue';
 import EscapeIcon from '@/components/icons/IconEscape.vue';
 import BalloonIcon from '@/components/icons/IconBalloon.vue';
 import DustbinIcon from '@/components/icons/IconDustbin.vue';
+import ExpandIcon from "@/components/icons/IconExpand.vue";
 import { type MessageType } from '@/types/custom';
 
 const emits = defineEmits(['clear', 'light']);
@@ -85,26 +86,27 @@ watch(() => props.questions, () => {
                 </div>
                 <div class="py-3 flex flex-col flex-nowrap gap-3">
                   <details
-                    class="py-3 px-3 items-center rounded-md bg-emerald-400 hover:bg-emerald-300 transition-colors duration-200 text-black cursor-pointer text-sm font-extrabold">
-                    <summary class="flex list-none justify-between">
+                    class="py-3 px-3 items-center rounded-md bg-emerald-500/10 hover:bg-emerald-300/10 transition-colors duration-200 text-white cursor-pointer text-sm [&_svg]:-rotate-[-90deg] [&_svg]:open:-rotate-90">
+                    <summary class="flex list-none justify-between text-emerald-400 font-bold">
                       編成
+                      <ExpandIcon />
                     </summary>
                   </details>
                   <details
-                    class="py-3 px-3 items-center rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-gray-500 cursor-pointer text-sm">
+                    class="py-3 px-3 items-center rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-gray-500 text-sm">
                     <summary class="flex list-none">
                       営業
                     </summary>
                   </details>
-                  <details
-                    class="py-3 px-3 items-center rounded-md bg-emerald-400 hover:bg-emerald-300 transition-colors duration-200 text-black cursor-pointer text-sm font-bold">
-                    <summary class="flex list-none">
+                  <details open
+                    class="py-3 px-3 items-center rounded-md bg-emerald-500/10 hover:bg-emerald-300/10 transition-colors duration-200 text-white cursor-pointer text-sm [&_svg]:-rotate-[-90deg] [&_svg]:open:-rotate-90">
+                    <summary class="flex list-none justify-between text-emerald-400 font-bold">
                       技術
+                      <ExpandIcon />
                     </summary>
                     <ul class="pt-3">
                       <li>運行</li>
                       <li>回線</li>
-                      <li>送受信</li>
                     </ul>
                   </details>
                 </div>
