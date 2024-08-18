@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+
 import PlusIcon from '@/components/icons/IconPlus.vue';
 import LightIcon from '@/components/icons/IconLight.vue';
 import DarkIcon from '@/components/icons/IconDark.vue';
@@ -8,13 +9,20 @@ import UpdateIcon from '@/components/icons/IconUpdate.vue';
 import EscapeIcon from '@/components/icons/IconEscape.vue';
 import BalloonIcon from '@/components/icons/IconBalloon.vue';
 import DustbinIcon from '@/components/icons/IconDustbin.vue';
-import TagIcon from "@/components/icons/IconTag.vue";
-import ExpandIcon from "@/components/icons/IconExpand.vue";
+
+import TagList from './TagList.vue';
+
 import { type MessageType } from '@/types/custom';
+
+interface Category {
+  id: number,
+  name: string,
+};
 
 const emits = defineEmits(['clear', 'light']);
 const props = defineProps<{ questions: MessageType[] }>();
 const questions = ref<MessageType[]>(props.questions);
+const selectedTags = ref<string[]>([]);
 
 let isLightMode = ref(false);
 const waitTime = ref<number>(500);
@@ -81,37 +89,7 @@ watch(() => props.questions, () => {
           </a>
           <div class="flex-col flex-1 overflow-y-auto border-y border-white/20">
             <div class="flex flex-col gap-2 text-gray-100 text-sm">
-              <div class="flex-col items-center flex-nowrap">
-                <div class="flex py-3 px-3 items-center text-gray-100 text-sm">
-                  <h2>タグ</h2>
-                </div>
-                <div class="py-3 flex flex-col flex-nowrap gap-3">
-                  <details
-                    class="py-3 px-3 items-center rounded-md bg-emerald-500/10 hover:bg-emerald-300/10 transition-colors duration-200 text-white cursor-pointer text-sm [&_svg:last-child]:open:-rotate-90">
-                    <summary class="flex justify-between gap-3 list-none text-emerald-400 font-bold">
-                      <TagIcon />
-                      <span class="grow">編成</span>
-                      <div class="justify-self-end">
-                        <ExpandIcon />
-                      </div>
-                    </summary>
-                  </details>
-                  <details open
-                    class="py-3 px-3 items-center rounded-md bg-emerald-500/10 hover:bg-emerald-300/10 transition-colors duration-200 text-white cursor-pointer text-sm [&_svg:last-child]:open:-rotate-90">
-                    <summary class="flex list-none justify-between gap-3 text-emerald-400 font-bold">
-                      <TagIcon />
-                      <span class="grow">技術</span>
-                      <div class="justify-self-end"></div>
-                      <ExpandIcon />
-                    </summary>
-                    <ul class="pt-3">
-                      <li>運行</li>
-                      <li>回線</li>
-                    </ul>
-                  </details>
-                </div>
-              </div>
-
+              <TagList :selected="selectedTags" />
             </div>
           </div>
 
