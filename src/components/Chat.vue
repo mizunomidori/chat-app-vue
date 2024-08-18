@@ -16,7 +16,7 @@ const props = defineProps<{ chat: MessageType }>();
 const chat = ref<MessageType>(props.chat);
 
 let currentChar = ref<string>('');
-const typingSpeed = ref<number>(20);
+const typingSpeed = ref<number>(30);
 let currentMessage = ref<HTMLDivElement>();
 
 const wait = (time: number) => {

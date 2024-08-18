@@ -89,6 +89,11 @@ const sendQuestion = async () => {
   await getAnswer();
 };
 
+const sendExample = (example: string) => {
+  question.value = example;
+  sendQuestion();
+}
+
 onMounted(() => {
   getQuestions();
 });
@@ -115,7 +120,7 @@ onMounted(() => {
           </div>
         </div>
         <!-- Guides -->
-        <Guides v-else />
+        <Guides @example="sendExample" v-else />
         <div
           class="absolute bottom-0 left-0 w-full border-t md:border-t-0 dark:border-white/20 md:border-transparent md:dark:border-transparent md:bg-vert-light-gradient bg-white dark:bg-gray-800 md:!bg-transparent dark:md:bg-vert-dark-gradient">
           <form @submit.prevent="getAnswer"

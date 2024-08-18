@@ -3,6 +3,18 @@ import SunIcon from '@/components/icons/IconSun.vue';
 import ThunderIcon from '@/components/icons/IconThunder.vue';
 import HistoryIcon from '@/components/icons/IconHistory.vue';
 import CautionIcon from '@/components/icons/IconCaution.vue';
+
+const emits = defineEmits(['example']);
+
+const exampleTemplates: string[] = [
+  "政見放送について教えて",
+  "・・・って何？",
+  "・・・ってなんでなん？",
+];
+
+const sendExample = (text: string) => {
+  emits('example', text);
+}
 </script>
 
 <template>
@@ -11,11 +23,9 @@ import CautionIcon from '@/components/icons/IconCaution.vue';
       <div class="react-scroll-to-bottom--css-ryzwt-1n7m0yu">
         <div class="flex flex-col items-center text-sm dark:bg-gray-800">
           <div
-            class="text-gray-800 w-full md:max-w-2xl lg:max-w-3xl md:h-full md:flex md:flex-col px-6 dark:text-gray-100"
-          >
+            class="text-gray-800 w-full md:max-w-2xl lg:max-w-3xl md:h-full md:flex md:flex-col px-6 dark:text-gray-100">
             <h1
-              class="text-4xl font-semibold text-center mt-6 sm:mt-[20vh] ml-auto mr-auto mb-10 sm:mb-16 flex gap-2 items-center justify-center"
-            >
+              class="text-4xl font-semibold text-center mt-6 sm:mt-[20vh] ml-auto mr-auto mb-10 sm:mb-16 flex gap-2 items-center justify-center">
               ChatGPT
             </h1>
             <div class="md:flex items-start text-center gap-3.5">
@@ -25,20 +35,17 @@ import CautionIcon from '@/components/icons/IconCaution.vue';
                   使用例
                 </h2>
                 <ul class="flex flex-col gap-3.5 w-full sm:max-w-md m-auto">
-                  <button
-                    class="w-full bg-gray-50 dark:bg-white/5 p-3 rounded-md hover:bg-gray-200 dark:hover:bg-gray-900"
-                  >
-                    "政見放送について教えて" →
+                  <button @click="sendExample(exampleTemplates[0])"
+                    class="w-full bg-gray-50 dark:bg-white/5 p-3 rounded-md hover:bg-gray-200 dark:hover:bg-gray-900">
+                    "{{ exampleTemplates[0] }}" →
                   </button>
-                  <button
-                    class="w-full bg-gray-50 dark:bg-white/5 p-3 rounded-md hover:bg-gray-200 dark:hover:bg-gray-900"
-                  >
-                    "・・・って何？" →
+                  <button @click="sendExample(exampleTemplates[1])"
+                    class="w-full bg-gray-50 dark:bg-white/5 p-3 rounded-md hover:bg-gray-200 dark:hover:bg-gray-900">
+                    "{{ exampleTemplates[1] }}" →
                   </button>
-                  <button
-                    class="w-full bg-gray-50 dark:bg-white/5 p-3 rounded-md hover:bg-gray-200 dark:hover:bg-gray-900"
-                  >
-                    "・・・ってなんでなん？" →
+                  <button @click="sendExample(exampleTemplates[2])"
+                    class="w-full bg-gray-50 dark:bg-white/5 p-3 rounded-md hover:bg-gray-200 dark:hover:bg-gray-900">
+                    "{{ exampleTemplates[2] }}" →
                   </button>
                 </ul>
               </div>
