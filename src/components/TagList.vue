@@ -1,57 +1,87 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
-import TagIcon from "@/components/icons/IconTag.vue";
-import ExpandIcon from "@/components/icons/IconExpand.vue";
+import TagIcon from '@/components/icons/IconTag.vue';
+import ExpandIcon from '@/components/icons/IconExpand.vue';
+import { type TagType } from '@/types/types';
 
-const props = defineProps<{ selectedItems: string[] }>();
-const selectedItems = ref<string[]>(props.selectedItems);
+interface MultiTagType {
+  tag_name: string;
+  tag_id: string;
+  checked: boolean;
+  sub_tags?: Tag[];
+}
+
+const props = defineProps<{ selectedTags: MultiTagType[] }>();
+const selectedTags = ref<MultiTagType[]>(props.selectedItems);
 let isAllSelected = ref<boolean>(true);
 
-const tags = [{
-  tagname: '編成',
-  genre: [],
-}, {
-  tagname: '技術',
-  genre: ['運行', '回線']
-}];
+const tags: MultiTagType[] = [
+  {
+    tag_name: '総務',
+    tag_id: 'soumu',
+  },
+  {
+    tag_name: '技術',
+    tag_id: 'eng',
+    sub_tags: [
+      {
+        tag_name: '運行',
+        tag_id: 'mcc',
+      },
+      {
+        tag_name: '回線',
+        tag_id: 'kc',
+      },
+    ],
+  },
+];
 
-const selectAll = (tagname: string) => {
-  const data = tags.find((tag) => tag.tagname === tagname);
+const checkAllSubTag = (tagname: string) => {
+  const data = tags.find((tag) => tag.tag_name === tagname);
 
   if (isAllSelected.value) {
     // Clear
-    selectedItems.value = [];
+    selectedTags.value = [];
     isAllSelected.value = false;
   } else {
     if (data) {
-      selectedItems.value = data?.genre;
+      selectedTags.value = data?.sub_tags;
       isAllSelected.value = true;
     } else {
-      console.log('tag-list: genre not found');
+      console.log('tag-list: sub_tags not found');
     }
   }
 };
 
-const selectOne = (tagname: string) => {
-  const data = tags.find((tag) => tag.tagname === tagname);
-  if (data) {
-    if (selectedItems.value.length === data.genre.length) {
-      isAllSelected.value = true;
-    } else {
-      isAllSelected.value = false;
-    }
+const checkSubTag = (tag: MultiTagType, sub_tag: TagType) => {
+  const data = tag.sub_tags.filter((t) => t.checked);
+  if (data.length === tag.sub_tags.length) {
+    tag.checked = true;
+  } else {
+    tag.checked = false;
   }
+  console.log(sub_tag.tag_name, sub_tag.checked);
 };
 
 onMounted(() => {
-  for (const tag of tags) {
-    selectedItems.value.concat(tag.genre);
+  selectedTags.value = tags;
+  for (const tag of selectedTags.value) {
+    tag.checked = true;
+    if (tag.sub_tags) {
+      for (const stag of tag.sub_tags) {
+        stag.checked = true;
+        console.log(stag.tag_name, stag.checked);
+      }
+    }
   }
 });
 
-watch(() => props.selectedItems, () => {
-  selectedItems.value = props.selectedItems;
-});
+watch(
+  () => props.selectedTags,
+  () => {
+    selectedTags.value = props.selectedTags;
+  },
+);
 </script>
 
 <template>
@@ -61,25 +91,57 @@ watch(() => props.selectedItems, () => {
     </div>
     <div class="py-3 flex flex-col flex-nowrap gap-3">
       <!-- Tags -->
-      <details open v-for="(tag, index) in tags" :key="tag.tagname + index"
-        class="py-3 px-3 items-center rounded-md bg-emerald-500/10 hover:bg-emerald-300/10 transition-colors duration-200 text-white text-sm [&_svg:last-child]:open:-rotate-90">
+      <details
+        open
+        v-for="(tag, index) in selectedTags"
+        :key="tag.tag_name + index"
+        class="py-3 px-3 items-center rounded-md bg-emerald-500/10 hover:bg-emerald-300/10 transition-colors duration-200 text-white text-sm [&_svg:last-child]:open:-rotate-90"
+      >
         <summary class="flex list-none justify-between gap-3 text-emerald-400 font-bold">
           <TagIcon />
-          <span class="grow">{{ tag.tagname }}</span>
-          <div class="justify-self-end" v-show="tag.genre.length">
+          <div class="flex grow gap-3">
+            <label class="cursor-pointer flex grow gap-3">
+              <input
+                type="checkbox"
+                switch
+                v-model="tag.checked"
+                :name="tag.tag_name"
+                :value="tag.tag_name"
+                class="cursor-pointer"
+              />
+              {{ tag.tag_name }}
+            </label>
+          </div>
+          <div class="justify-self-end" v-show="tag.sub_tags?.length">
             <ExpandIcon />
           </div>
         </summary>
-        <div v-show="tag.genre.length" class="grid grid-cols-2 gap-3 py-3 px-3">
-          <div v-show="tag.genre.length > 1" class="col-span-2 flex gap-2">
-            <input type="checkbox" :name="tag.tagname" value="setall" id="setall" :checked="isAllSelected"
-              @change="selectAll(tag.tagname)" class="cursor-pointer" />
-            <label for="setall" class="cursor-pointer">すべて選択</label>
-          </div>
-          <div v-for="(item, idx) in tag.genre" :key="item + idx" class="flex gap-3">
-            <input type="checkbox" v-model="selectedItems" :name="tag.tagname" :value="item" :id="item"
-              @change="selectOne(tag.tagname)" class="cursor-pointer" />
-            <label :for="item" class="cursor-pointer">{{ item }}</label>
+        <div v-show="tag.sub_tags?.length" class="grid grid-cols-2 gap-3 py-3 px-3">
+          <!-- <div v-show="tag.sub_tags?.length > 1" class="col-span-2 flex gap-2">
+            <input
+              type="checkbox"
+              :name="tag.tag_name"
+              :value="tag.tag_name + '-all'"
+              :id="tag.tag_name + '-all'"
+              :checked="isAllSelected"
+              @change="checkAllSubTag(tag.tag_name)"
+              class="cursor-pointer"
+            />
+            <label :for="tag.tag_name + '-all'" class="cursor-pointer">すべて選択</label>
+          </div> -->
+          <div v-for="(sub_tag, idx) in tag.sub_tags" :key="sub_tag + idx">
+            <label class="cursor-pointer flex gap-3">
+              <input
+                type="checkbox"
+                switch
+                v-model="sub_tag.checked"
+                :name="sub_tag.tag_name"
+                :value="sub_tag.tag_name"
+                @change="checkSubTag(tag, sub_tag)"
+                class="cursor-pointer"
+              />
+              {{ sub_tag.tag_name }}
+            </label>
           </div>
         </div>
       </details>

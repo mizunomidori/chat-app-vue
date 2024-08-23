@@ -12,12 +12,12 @@ import DustbinIcon from '@/components/icons/IconDustbin.vue';
 
 import TagList from './TagList.vue';
 
-import { type MessageType } from '@/types/custom';
+import { type MessageType } from '@/types/types';
 
 interface Category {
-  id: number,
-  name: string,
-};
+  id: number;
+  name: string;
+}
 
 const emits = defineEmits(['clear', 'light']);
 const props = defineProps<{ questions: MessageType[] }>();
@@ -33,9 +33,9 @@ interface ConfirmType {
 }
 
 const clearConversation: ConfirmType = {
-  text: "会話履歴の全クリア",
+  text: '会話履歴の全クリア',
   needConfirm: false,
-}
+};
 
 const clearStorage = () => {
   setTimeout(() => {
@@ -49,17 +49,22 @@ const changeToLight = () => {
   emits('light', isLightMode.value);
 };
 
-watch(() => props.questions, () => {
-  questions.value = props.questions;
-});
+watch(
+  () => props.questions,
+  () => {
+    questions.value = props.questions;
+  },
+);
 </script>
 <template>
   <div class="dark hidden bg-gray-900 md:fixed md:inset-y-0 md:flex md:w-[260px] md:flex-col">
     <div class="flex h-full min-h-0 flex-col">
       <div class="scrollbar-trigger flex h-full w-full flex-1 items-start border-white/20">
         <nav class="flex h-full flex-1 flex-col space-y-1 p-2">
-          <a @click="clearStorage()"
-            class="flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm mb-2 flex-shrink-0 border border-white/20">
+          <a
+            @click="clearStorage()"
+            class="flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm mb-2 flex-shrink-0 border border-white/20"
+          >
             <PlusIcon />
             <!-- TODO: 新規タブで会話を開始したほうがいい？ -->
             新しい会話を開始
@@ -70,20 +75,26 @@ watch(() => props.questions, () => {
 
           <div class="flex-col flex-1 overflow-y-auto border-b border-white/20">
             <div class="flex flex-col gap-2 text-gray-100 text-sm">
-              <a v-for="(thread, index) in questions" :key="index"
-                class="flex py-3 px-3 items-center gap-3 relative rounded-md hover:bg-[#2A2B32] cursor-pointer break-all hover:pr-4 group">
+              <a
+                v-for="(thread, index) in questions"
+                :key="index"
+                class="flex py-3 px-3 items-center gap-3 relative rounded-md hover:bg-[#2A2B32] cursor-pointer break-all hover:pr-4 group"
+              >
                 <BalloonIcon />
                 <div class="flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative">
                   {{ thread.content }}
                   <div
-                    class="absolute inset-y-0 right-0 w-8 z-10 bg-gradient-to-l from-gray-900 group-hover:from-[#2A2B32]">
-                  </div>
+                    class="absolute inset-y-0 right-0 w-8 z-10 bg-gradient-to-l from-gray-900 group-hover:from-[#2A2B32]"
+                  ></div>
                 </div>
               </a>
             </div>
           </div>
-          <a v-if="questions && questions.length" @click="clearStorage()"
-            class="flex py-3 px-3 items-center gap-3 rounded-md bg-red-900 hover:bg-red-800 transition-colors duration-200 text-white cursor-pointer text-sm">
+          <a
+            v-if="questions && questions.length"
+            @click="clearStorage()"
+            class="flex py-3 px-3 items-center gap-3 rounded-md bg-red-900 hover:bg-red-800 transition-colors duration-200 text-white cursor-pointer text-sm"
+          >
             <DustbinIcon />
             会話履歴の全クリア
           </a>
@@ -93,24 +104,33 @@ watch(() => props.questions, () => {
             </div>
           </div>
 
-          <a @click="changeToLight()"
-            class="flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm">
+          <a
+            @click="changeToLight()"
+            class="flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm"
+          >
             <DarkIcon v-if="isLightMode" />
             <LightIcon v-else />
             {{ isLightMode ? 'Dark' : 'Light' }} mode
           </a>
-          <a href="https://discord.gg/openai" target="_blank"
-            class="flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm">
+          <a
+            href="https://discord.gg/openai"
+            target="_blank"
+            class="flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm"
+          >
             <TeamsIcon />
             OpenAI Teams
           </a>
-          <a href="https://learn.microsoft.com/ja-jp/azure/ai-services/openai/" target="_blank"
-            class="flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm">
+          <a
+            href="https://learn.microsoft.com/ja-jp/azure/ai-services/openai/"
+            target="_blank"
+            class="flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm"
+          >
             <UpdateIcon />
             Azure OpenAI 公式ドキュメント
           </a>
           <a
-            class="flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm">
+            class="flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm"
+          >
             <EscapeIcon />Log out
           </a>
         </nav>
