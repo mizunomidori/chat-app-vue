@@ -17,6 +17,8 @@ const questionList = ref<MessageType[]>([]);
 let isThinking = ref<boolean>(false);
 let isLight = ref<boolean>(false);
 
+const selectedTags = ref<string[]>([]);
+
 // const openai = new OpenAI({
 //   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
 //   dangerouslyAllowBrowser: true,
@@ -90,6 +92,11 @@ const sendExample = (example: string) => {
   sendQuestion();
 };
 
+const updateSelectedTags = (tags: string[]) => {
+  selectedTags.value = tags;
+  console.log('home:tags:', selectedTags.value);
+};
+
 onMounted(() => {
   getQuestions();
 });
@@ -153,7 +160,12 @@ onMounted(() => {
         </div>
       </main>
     </div>
-    <Sidebar :questions="questionList" @clear="clearStorage()" @light="isLight = $event" />
+    <Sidebar
+      :questions="questionList"
+      @clear="clearStorage()"
+      @light="isLight = $event"
+      @update-selected-tags="updateSelectedTags"
+    />
     <DocsPreview />
   </div>
 </template>

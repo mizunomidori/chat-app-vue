@@ -2,20 +2,14 @@
 import { onMounted, ref, watch } from 'vue';
 import TagIcon from '@/components/icons/IconTag.vue';
 import ExpandIcon from '@/components/icons/IconExpand.vue';
-import { type TagType } from '@/types/types';
+import { type TagType, type MultiTagType } from '@/types/types';
 
-interface MultiTagType {
-  tag_name: string;
-  tag_id: string;
-  checked: boolean;
-  sub_tags?: Tag[];
-}
-
-const props = defineProps<{ selectedTags: MultiTagType[] }>();
-const selectedTags = ref<MultiTagType[]>(props.selectedItems);
+const emits = defineEmits(['updateSelectedTags']);
+const referenceTags = ref<MultiTagType[]>([]);
+const selectedTags = ref<string[]>([]);
 let isAllSelected = ref<boolean>(true);
 
-const tags: MultiTagType[] = [
+const tags = [
   {
     tag_name: '総務',
     tag_id: 'soumu',
@@ -36,52 +30,29 @@ const tags: MultiTagType[] = [
   },
 ];
 
-const checkAllSubTag = (tagname: string) => {
-  const data = tags.find((tag) => tag.tag_name === tagname);
-
-  if (isAllSelected.value) {
-    // Clear
-    selectedTags.value = [];
-    isAllSelected.value = false;
+const toggleTag = (tag_id: string) => {
+  const index = selectedTags.value.indexOf(tag_id);
+  if (index === -1) {
+    selectedTags.value.push(tag_id);
   } else {
-    if (data) {
-      selectedTags.value = data?.sub_tags;
-      isAllSelected.value = true;
-    } else {
-      console.log('tag-list: sub_tags not found');
-    }
+    selectedTags.value.splice(index, 1);
   }
-};
-
-const checkSubTag = (tag: MultiTagType, sub_tag: TagType) => {
-  const data = tag.sub_tags.filter((t) => t.checked);
-  if (data.length === tag.sub_tags.length) {
-    tag.checked = true;
-  } else {
-    tag.checked = false;
-  }
-  console.log(sub_tag.tag_name, sub_tag.checked);
+  emits('updateSelectedTags', selectedTags.value);
 };
 
 onMounted(() => {
-  selectedTags.value = tags;
-  for (const tag of selectedTags.value) {
+  referenceTags.value = tags;
+  for (const tag of referenceTags.value) {
     tag.checked = true;
+    selectedTags.value.push(tag.tag_id);
     if (tag.sub_tags) {
       for (const stag of tag.sub_tags) {
         stag.checked = true;
-        console.log(stag.tag_name, stag.checked);
+        selectedTags.value.push(tag.tag_id);
       }
     }
   }
 });
-
-watch(
-  () => props.selectedTags,
-  () => {
-    selectedTags.value = props.selectedTags;
-  },
-);
 </script>
 
 <template>
@@ -93,7 +64,7 @@ watch(
       <!-- Tags -->
       <details
         open
-        v-for="(tag, index) in selectedTags"
+        v-for="(tag, index) in referenceTags"
         :key="tag.tag_name + index"
         class="py-3 px-3 items-center rounded-md bg-emerald-500/10 hover:bg-emerald-300/10 transition-colors duration-200 text-white text-sm [&_svg:last-child]:open:-rotate-90"
       >
@@ -129,7 +100,7 @@ watch(
             />
             <label :for="tag.tag_name + '-all'" class="cursor-pointer">すべて選択</label>
           </div> -->
-          <div v-for="(sub_tag, idx) in tag.sub_tags" :key="sub_tag + idx">
+          <div v-for="(sub_tag, idx) in tag.sub_tags" :key="sub_tag + idx.toString()">
             <label class="cursor-pointer flex gap-3">
               <input
                 type="checkbox"
@@ -137,7 +108,7 @@ watch(
                 v-model="sub_tag.checked"
                 :name="sub_tag.tag_name"
                 :value="sub_tag.tag_name"
-                @change="checkSubTag(tag, sub_tag)"
+                @change="toggleTag(sub_tag.tag_id)"
                 class="cursor-pointer"
               />
               {{ sub_tag.tag_name }}

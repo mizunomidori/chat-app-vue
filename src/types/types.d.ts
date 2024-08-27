@@ -6,5 +6,12 @@ export interface MessageType {
 export interface TagType {
   tag_name: string;
   tag_id: string;
-  checked: boolean;
+  checked?: boolean;
+}
+
+export interface MultiTagType {
+  tag_name: string;
+  tag_id: string;
+  checked?: boolean;
+  sub_tags?: TagType[];
 }

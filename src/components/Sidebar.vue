@@ -19,10 +19,9 @@ interface Category {
   name: string;
 }
 
-const emits = defineEmits(['clear', 'light']);
+const emits = defineEmits(['clear', 'light', 'updateSelectedTags']);
 const props = defineProps<{ questions: MessageType[] }>();
 const questions = ref<MessageType[]>(props.questions);
-const selectedTags = ref<string[]>([]);
 
 let isLightMode = ref(false);
 const waitTime = ref<number>(500);
@@ -47,6 +46,11 @@ const clearStorage = () => {
 const changeToLight = () => {
   isLightMode.value = !isLightMode.value;
   emits('light', isLightMode.value);
+};
+
+const updateSelectedTags = (selectedTags: string[]) => {
+  emits('updateSelectedTags', selectedTags);
+  console.log('sidebar:tags:', selectedTags);
 };
 
 watch(
@@ -100,7 +104,7 @@ watch(
           </a>
           <div class="flex-col flex-1 overflow-y-auto border-y border-white/20">
             <div class="flex flex-col gap-2 text-gray-100 text-sm">
-              <TagList :selected-items="selectedTags" />
+              <TagList @update-selected-tags="updateSelectedTags" />
             </div>
           </div>
 
