@@ -12,7 +12,7 @@ import DustbinIcon from '@/components/icons/IconDustbin.vue';
 
 import TagList from './TagList.vue';
 
-import { type MessageType } from '@/types/types';
+import type { MessageType } from '@/types/types.d';
 
 interface Category {
   id: number;

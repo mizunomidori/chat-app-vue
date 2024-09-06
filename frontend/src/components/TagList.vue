@@ -2,7 +2,7 @@
 import { onMounted, ref, watch } from 'vue';
 import TagIcon from '@/components/icons/IconTag.vue';
 import ExpandIcon from '@/components/icons/IconExpand.vue';
-import { type TagType, type MultiTagType } from '@/types/types';
+import type { TagType, MultiTagType } from '@/types/types.d';
 
 const emits = defineEmits(['updateSelectedTags']);
 const referenceTags = ref<MultiTagType[]>([]);

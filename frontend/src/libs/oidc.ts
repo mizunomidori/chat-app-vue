@@ -30,7 +30,7 @@ export const getCredential = () => {
   });
 };
 
-export const activate = async (req, res) => {
+export const activate = async (req: any, res: any) => {
   const region = 'ap-northeast-1';
   const token = req.header('x-amzn-oidc-data');
 

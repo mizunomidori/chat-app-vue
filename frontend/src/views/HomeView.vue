@@ -7,7 +7,7 @@ import Sidebar from '@/components/Sidebar.vue';
 import DocsPreview from '@/components/DocsPreview.vue';
 
 import SubmitIcon from '@/components/icons/IconSubmit.vue';
-import { type MessageType } from '@/types/types';
+import type { MessageType } from '@/types/types.d';
 
 import { ref, onMounted, watch } from 'vue';
 

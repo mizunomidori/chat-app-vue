@@ -4,7 +4,7 @@ import GptIcon from '@/components/icons/IconGpt.vue';
 import UserIcon from '@/components/icons/IconUser.vue';
 import MemoIcon from '@/components/icons/IconMemo.vue';
 import ClipboardIcon from '@/components/icons/IconClipboard.vue';
-import { type MessageType } from '@/types/types';
+import type { MessageType } from '@/types/types.d';
 
 // const props = defineProps({
 //   chat: {
