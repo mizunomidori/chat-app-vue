@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev:vue": "vite",
+    "dev": "NODE_ENV=develop nodemon",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "test:unit": "vitest",
@@ -14,7 +15,9 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@types/express": "^4.17.21",
     "aws-jwt-verify": "^4.0.1",
+    "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "jwks-rsa": "^3.1.0",
     "openai": "^4.55.9",
@@ -40,6 +43,7 @@
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.23.0",
     "jsdom": "^24.1.0",
+    "nodemon": "^3.1.4",
     "npm-run-all2": "^6.2.0",
     "postcss": "^8.4.41",
     "prettier": "^3.2.5",

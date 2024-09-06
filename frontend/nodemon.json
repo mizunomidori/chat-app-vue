@@ -1,0 +1,6 @@
+{
+  "watch": ["src"],
+  "ext": "ts,tsx,vue",
+  "ignore": ["src/lib/**/*.txt"],
+  "exec": "vite build --ssr src/index.ts --outDir dist && node ./dist/index.js"
+}
